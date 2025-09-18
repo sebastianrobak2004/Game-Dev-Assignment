@@ -154,7 +154,9 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Unifinished walls_0: -3435653145403337612
+      Unifinished walls_1: 4107799021500575267
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

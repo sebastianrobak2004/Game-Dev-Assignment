@@ -202,7 +202,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Pacman_student_0: -131464663268524271
+      Pacman_student_1: -358590625879230357
+      Pacman_student_2: 3992298229730953880
+      Pacman_student_3: -2117459896521849370
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
