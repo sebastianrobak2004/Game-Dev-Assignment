@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using System.Collections.Generic;
 
 public class PacmanMovement : MonoBehaviour
 {
@@ -11,9 +13,13 @@ public class PacmanMovement : MonoBehaviour
 
     [SerializeField] private Animator animator;
     [SerializeField] private Grid grid; 
+    [SerializeField] private List<Tilemap> tilemaps; // all 4 quadrants
+    [SerializeField] private List<TileBase> walkableTiles; // allowed tiles, include null if empty spaces
+
     void Start()
     {
-        animator.SetBool("dead", false);
+
+       
         targetWorldPos = GridToWorld(gridPos);
         transform.position = targetWorldPos;
     }
@@ -22,28 +28,32 @@ public class PacmanMovement : MonoBehaviour
     {
         HandleInput();
 
-      
+        // Only update when we reach target
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
         {
-            gridPos += currentDir;
-            targetWorldPos = GridToWorld(gridPos);
-
-           
-            if (nextDir != Vector2Int.zero)
+            // Try turning first
+            if (nextDir != Vector2Int.zero && IsWalkable(gridPos + nextDir))
             {
                 currentDir = nextDir;
                 nextDir = Vector2Int.zero;
             }
+
+            // Then try moving forward
+            if (IsWalkable(gridPos + currentDir))
+            {
+                gridPos += currentDir;
+                targetWorldPos = GridToWorld(gridPos);
+            }
         }
 
-        
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            targetWorldPos,
-            moveSpeed * Time.deltaTime
-        );
+        // Move toward target
+        transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
 
         UpdateAnimator();
+
+        // Debug what tile is ahead (checks all tilemaps)
+        TileBase tileAhead = GetTileAt(gridPos + currentDir);
+        Debug.Log($"GridPos: {gridPos} CurrentDir: {currentDir} NextDir: {nextDir} TileAhead: {tileAhead}");
     }
 
     void HandleInput()
@@ -63,7 +73,6 @@ public class PacmanMovement : MonoBehaviour
     Vector3 GridToWorld(Vector2Int gridPosition)
     {
         Vector3Int cell = new Vector3Int(gridPosition.x, gridPosition.y, 0);
-   
         return grid.CellToWorld(cell) + (Vector3)grid.cellSize / 2f;
     }
 
@@ -71,5 +80,23 @@ public class PacmanMovement : MonoBehaviour
     {
         Vector3Int cell = grid.WorldToCell(worldPosition);
         return new Vector2Int(cell.x, cell.y);
+    }
+
+    bool IsWalkable(Vector2Int pos)
+{
+    TileBase tile = GetTileAt(pos);
+    return walkableTiles.Contains(tile);
+}
+
+    TileBase GetTileAt(Vector2Int pos)
+    {
+        Vector3Int cellPos = new Vector3Int(pos.x, pos.y, 0);
+        foreach (Tilemap tm in tilemaps)
+        {
+            TileBase tile = tm.GetTile(cellPos);
+            if (walkableTiles.Contains(tile))
+                return tile;
+        }
+        return null;
     }
 }
