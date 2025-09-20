@@ -196,7 +196,11 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 299ddf30b0773524a923af1e332051fa, type: 2}
   - m_RefCount: 1
+<<<<<<< HEAD
     m_Data: {fileID: 11400000, guid: f8c13b2bb1e766d45aeb3c3f8c9e222d, type: 2}
+=======
+    m_Data: {fileID: 11400000, guid: f6fd3758e2654cc4c8b9b29f96d02237, type: 2}
+>>>>>>> Feature-LevelGenerator
   m_TileSpriteArray:
   - m_RefCount: 1
     m_Data: {fileID: 1985551986, guid: 5ffe08889dde0f141bb020a75d42f276, type: 3}
@@ -215,7 +219,11 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 1345346102870320915, guid: 325dbe5a21ab9154db47af1d2c7118ed, type: 3}
   - m_RefCount: 1
+<<<<<<< HEAD
     m_Data: {fileID: -4518853377557969270, guid: 9f992f068f87c4741893281246a4026f, type: 3}
+=======
+    m_Data: {fileID: 5931842347579807508, guid: ce1396807f8d3b544b7c0506cfcdb145, type: 3}
+>>>>>>> Feature-LevelGenerator
   m_TileMatrixArray:
   - m_RefCount: 9
     m_Data:
@@ -313,7 +321,11 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+<<<<<<< HEAD
 --- !u!114 &8826229551115355282
+=======
+--- !u!114 &1005220137662727831
+>>>>>>> Feature-LevelGenerator
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
