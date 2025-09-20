@@ -10,16 +10,17 @@ public class PacmanMovement : MonoBehaviour
     private Vector2Int nextDir = Vector2Int.zero;
 
     private Vector3 targetWorldPos;
+    [SerializeField] private AudioSource audioSource;
+
 
     [SerializeField] private Animator animator;
     [SerializeField] private Grid grid; 
-    [SerializeField] private List<Tilemap> tilemaps; // all 4 quadrants
-    [SerializeField] private List<TileBase> walkableTiles; // allowed tiles, include null if empty spaces
+    [SerializeField] private List<Tilemap> tilemaps;
+    [SerializeField] private List<TileBase> walkableTiles;
+
 
     void Start()
     {
-
-       
         targetWorldPos = GridToWorld(gridPos);
         transform.position = targetWorldPos;
     }
@@ -28,32 +29,31 @@ public class PacmanMovement : MonoBehaviour
     {
         HandleInput();
 
-        // Only update when we reach target
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
         {
-            // Try turning first
             if (nextDir != Vector2Int.zero && IsWalkable(gridPos + nextDir))
             {
                 currentDir = nextDir;
                 nextDir = Vector2Int.zero;
             }
-
-            // Then try moving forward
             if (IsWalkable(gridPos + currentDir))
             {
                 gridPos += currentDir;
                 targetWorldPos = GridToWorld(gridPos);
             }
         }
-
-        // Move toward target
-        transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
+        float distance = Vector3.Distance(transform.position, targetWorldPos);
+            if (distance > 0f)
+            {
+                float t = moveSpeed * Time.deltaTime / distance;
+                transform.position = Vector3.Lerp(transform.position, targetWorldPos, t);
+            }
 
         UpdateAnimator();
 
-        // Debug what tile is ahead (checks all tilemaps)
         TileBase tileAhead = GetTileAt(gridPos + currentDir);
         Debug.Log($"GridPos: {gridPos} CurrentDir: {currentDir} NextDir: {nextDir} TileAhead: {tileAhead}");
+
     }
 
     void HandleInput()
