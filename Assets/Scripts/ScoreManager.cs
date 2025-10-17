@@ -7,10 +7,10 @@ public class ScoreManager : MonoBehaviour
 {
 
     [SerializeField]private TextMeshProUGUI tb;
-    private int score = 0;
-    private bool needToUpdate = false;
+    private static int score = 0;
+    private static bool needToUpdate = false;
     // Start is called before the first frame update
-    public void increseScore(int x)
+    public static void increseScore(int x)
     {
         score += x;
         needToUpdate = true;
