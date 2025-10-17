@@ -18,6 +18,7 @@ public class PacmanMovement : MonoBehaviour
     [SerializeField] private List<Tilemap> tilemaps;
     [SerializeField] private List<TileBase> walkableTiles;
 
+    public bool IsMoving => Vector3.Distance(transform.position, targetWorldPos) > 0.01f;
 
     void Start()
     {
@@ -52,7 +53,17 @@ public class PacmanMovement : MonoBehaviour
         UpdateAnimator();
 
         TileBase tileAhead = GetTileAt(gridPos + currentDir);
-        Debug.Log($"GridPos: {gridPos} CurrentDir: {currentDir} NextDir: {nextDir} TileAhead: {tileAhead}");
+
+        if (IsMoving)
+        {
+            if (!audioSource.isPlaying)
+                audioSource.Play();
+        }
+        else
+        {
+            if (audioSource.isPlaying)
+                audioSource.Stop();
+        }
 
     }
 
