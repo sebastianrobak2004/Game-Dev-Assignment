@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System;
 
 public class PelletTilemapSpawner : MonoBehaviour
 {
@@ -13,6 +14,13 @@ public class PelletTilemapSpawner : MonoBehaviour
     [Header("Position Offset")]
     [Tooltip("Adjust this if pellets appear slightly off-center from their tiles")]
     [SerializeField] private Vector3 offset = Vector3.zero;
+
+    public static event Action OnPowerPelletEaten;
+
+    public void PelletEaten()
+    {
+        OnPowerPelletEaten?.Invoke();
+    }
 
     void Start()
     {
