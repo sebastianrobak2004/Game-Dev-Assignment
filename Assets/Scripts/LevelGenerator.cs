@@ -26,6 +26,7 @@ public class LevelGenerator : MonoBehaviour
         {2,2,2,2,2,1,5,3,3,0,4,0,0,0}, 
         {0,0,0,0,0,0,5,0,0,0,4,0,0,0}, };
     
+
     void Start()
     {
         map.ClearAllTiles();

@@ -25,14 +25,15 @@ public class GhostSetup : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         AssignAnimatorController();
-    }
-
-    void Start()
-    {
         if (snapToGridOnStart)
         {
             SnapToGrid();
         }
+    }
+
+    void Start()
+    {
+        
     }
 
     public void SnapToGrid()

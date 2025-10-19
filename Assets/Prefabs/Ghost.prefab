@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 572355371050093136}
   - component: {fileID: 7152060637477074754}
   - component: {fileID: 2374312856053704306}
+  - component: {fileID: 3621672577275533598}
   m_Layer: 0
   m_Name: Ghost
   m_TagString: Untagged
@@ -130,3 +131,15 @@ MonoBehaviour:
   gridSpawnPos: {x: 9, y: -9}
   snapToGridOnStart: 1
   ghostType: 0
+--- !u!114 &3621672577275533598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7357636902102033567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb88579579ae8449abda5e998bb4fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
