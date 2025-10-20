@@ -1,4 +1,4 @@
-using System.Collections;
+//using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -7,6 +7,7 @@ public class ScoreManager : MonoBehaviour
 {
 
     [SerializeField]private TextMeshProUGUI tb;
+    [SerializeField] private GameOverChecker goc;
     private static int score = 0;
     private static bool needToUpdate = false;
     // Start is called before the first frame update
@@ -14,6 +15,7 @@ public class ScoreManager : MonoBehaviour
     {
         score += x;
         needToUpdate = true;
+        
     }
 
 
@@ -25,6 +27,7 @@ public class ScoreManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        goc.score = score;
         if(needToUpdate){
             tb.text = "Score: " + score;
         }

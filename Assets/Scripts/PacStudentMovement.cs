@@ -11,6 +11,7 @@ public class PacmanMovement : MonoBehaviour
 
     private Vector3 targetWorldPos;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource deathSound;
 
 
     [SerializeField] private Animator animator;
@@ -20,6 +21,11 @@ public class PacmanMovement : MonoBehaviour
 
 
     [SerializeField] private ParticleSystem dirt;
+    [SerializeField] public bool dead;
+    private bool playOnce = true;
+
+    
+
 
     public bool IsMoving => Vector3.Distance(transform.position, targetWorldPos) > 0.01f;
 
@@ -29,46 +35,75 @@ public class PacmanMovement : MonoBehaviour
         transform.position = targetWorldPos;
     }
 
+    public void ResetAtPosition(Vector3 newWorldPos)
+    {
+        // Snap Pac-Man’s world position
+        transform.position = newWorldPos;
+
+        // Sync grid + target
+        gridPos = WorldToGrid(newWorldPos);
+        targetWorldPos = GridToWorld(gridPos);
+
+        // Stop all movement
+
+
+        // Reset animation so he faces forward / idle
+
+    }
+
+
+
     void Update()
     {
-        HandleInput();
-
-        if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
+        if(!dead)
         {
-            if (nextDir != Vector2Int.zero && IsWalkable(gridPos + nextDir))
-            {
-                currentDir = nextDir;
-                nextDir = Vector2Int.zero;
-            }
-            if (IsWalkable(gridPos + currentDir))
-            {
-                gridPos += currentDir;
-                targetWorldPos = GridToWorld(gridPos);
-            }
-        }
-        float distance = Vector3.Distance(transform.position, targetWorldPos);
-            if (distance > 0f)
-            {
-                float t = moveSpeed * Time.deltaTime / distance;
-                transform.position = Vector3.Lerp(transform.position, targetWorldPos, t);
-            }
+            HandleInput();
 
-        UpdateAnimator();
+            if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
+            {
+                if (nextDir != Vector2Int.zero && IsWalkable(gridPos + nextDir))
+                {
+                    currentDir = nextDir;
+                    nextDir = Vector2Int.zero;
+                }
+                if (IsWalkable(gridPos + currentDir))
+                {
+                    gridPos += currentDir;
+                    targetWorldPos = GridToWorld(gridPos);
+                }
+            }
+            float distance = Vector3.Distance(transform.position, targetWorldPos);
+                if (distance > 0f)
+                {
+                    float t = moveSpeed * Time.deltaTime / distance;
+                    transform.position = Vector3.Lerp(transform.position, targetWorldPos, t);
+                }
 
-        TileBase tileAhead = GetTileAt(gridPos + currentDir);
-        var emission = dirt.emission;
-        emission.enabled = IsMoving;
-        if (IsMoving)
-        {
+            UpdateAnimator();
+
+            TileBase tileAhead = GetTileAt(gridPos + currentDir);
+            var emission = dirt.emission;
+            emission.enabled = IsMoving;
+            if (IsMoving)
+            {
+                
+                
+                if (!audioSource.isPlaying)
+                    audioSource.Play();
+            }
+            else
+            {
+                if (audioSource.isPlaying)
+                    audioSource.Stop();
+            }
+        }else{
+            audioSource.Stop();
+            animator.SetBool("Dead", true);
+            if(playOnce){
+                deathSound.Play();
+                playOnce = false;
+            }
             
-            
-            if (!audioSource.isPlaying)
-                audioSource.Play();
-        }
-        else
-        {
-            if (audioSource.isPlaying)
-                audioSource.Stop();
         }
 
     }
@@ -116,4 +151,18 @@ public class PacmanMovement : MonoBehaviour
         }
         return null;
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+{
+    if (other.CompareTag("Ghost"))
+    {
+        GhostController ghost = other.GetComponent<GhostController>();
+        if(ghost.state == GhostController.GhostStates.Normal)
+        {
+            dead = true;
+        }
+        
+        
+    }
+}
 }
