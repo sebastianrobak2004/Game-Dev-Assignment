@@ -32,7 +32,7 @@ public class GameTimer : MonoBehaviour
 
         if (timerText != null)
         {
-            timerText.text = $"{minutes:00}:{seconds:00}";/
+            timerText.text = $"{minutes:00}:{seconds:00}";
         }
     }
 }
