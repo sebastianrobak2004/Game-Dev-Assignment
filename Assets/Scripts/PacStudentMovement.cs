@@ -12,6 +12,7 @@ public class PacmanMovement : MonoBehaviour
     private Vector3 targetWorldPos;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioSource deathSound;
+    [SerializeField] private AudioSource bonkSound;
 
 
     [SerializeField] private Animator animator;
@@ -86,6 +87,7 @@ public class PacmanMovement : MonoBehaviour
             }
             else
             {
+                
                 if (audioSource.isPlaying)
                     audioSource.Stop();
             }
