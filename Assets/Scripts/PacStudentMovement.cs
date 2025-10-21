@@ -37,17 +37,10 @@ public class PacmanMovement : MonoBehaviour
 
     public void ResetAtPosition(Vector3 newWorldPos)
     {
-        // Snap Pac-Man’s world position
         transform.position = newWorldPos;
 
-        // Sync grid + target
         gridPos = WorldToGrid(newWorldPos);
         targetWorldPos = GridToWorld(gridPos);
-
-        // Stop all movement
-
-
-        // Reset animation so he faces forward / idle
 
     }
 

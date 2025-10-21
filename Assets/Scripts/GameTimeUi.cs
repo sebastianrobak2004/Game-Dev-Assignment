@@ -14,10 +14,7 @@ public class GameTimer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         UpdateTimerText(0f);
-
-        
     }
 
     void Update()
@@ -33,11 +30,9 @@ public class GameTimer : MonoBehaviour
         int minutes = (int)(time / 60f);
         int seconds = (int)(time % 60f);
 
-        int centiseconds = (int)(time * 100f) % 100;
-
         if (timerText != null)
-            timerText.text = $"{minutes:00}:{seconds:00}:{centiseconds:00}";
-        else
-            Debug.LogWarning("GameTimer: timerText reference is missing.");
+        {
+            timerText.text = $"{minutes:00}:{seconds:00}";/
+        }
     }
 }

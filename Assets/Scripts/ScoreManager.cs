@@ -10,7 +10,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private GameOverChecker goc;
     private static int score = 0;
     private static bool needToUpdate = false;
-    // Start is called before the first frame update
+
     public static void increseScore(int x)
     {
         score += x;
@@ -24,7 +24,6 @@ public class ScoreManager : MonoBehaviour
         tb.text = "Score: " + score;
     }
 
-    // Update is called once per frame
     void Update()
     {
         goc.score = score;

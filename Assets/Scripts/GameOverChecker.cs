@@ -5,18 +5,23 @@ using TMPro;
 
 public class GameOverChecker : MonoBehaviour
 {
-    [SerializeField] private PacmanMovement pacman;
+    [SerializeField] private PacmanMovement pacman;/
     [SerializeField]private TextMeshProUGUI tb;
     [SerializeField] public int score;
+
+    public bool gameHasEnded => pacman.dead & score == 2300;
+    public bool newHighScore => score > PlayerPrefs.GetInt("HighScore", 0);
+    
     void Update()
     {
-        if (pacman.dead || score == 2300)
+        if (gameHasEnded)
         {
             tb.text = "GAME OVER! \n Score is: " + score;
 
-            if(score > PlayerPrefs.GetInt("HighScore", 0)){
-            PlayerPrefs.SetInt("HighScore", score);
-            PlayerPrefs.Save();
+            if(newHighScore)
+            {
+                PlayerPrefs.SetInt("HighScore", score);
+                PlayerPrefs.Save();
             }
         }
         

@@ -36,6 +36,8 @@ public class GhostController : MonoBehaviour
     [SerializeField] private List<Vector3Int> cornerCells = new List<Vector3Int>();
     private int currentCornerIndex = 0;
 
+    public bool hasReturnedHome => grid.WorldToCell(gameObject.transform.position) == grid.WorldToCell(spawn);
+
     
 
     void Start()
@@ -92,8 +94,6 @@ public class GhostController : MonoBehaviour
 
 
 
-
-
         if(state == GhostStates.Scared)
         {
             GhostScared();
@@ -102,8 +102,8 @@ public class GhostController : MonoBehaviour
             }
             
             deadSound.Stop();
-
         }
+
         if(state == GhostStates.Dead)
         {
             GhostDead();
@@ -112,18 +112,19 @@ public class GhostController : MonoBehaviour
             }
             scaredSound.Stop();
         }
+
         if(state == GhostStates.Normal){
             scaredSound.Stop();
             deadSound.Stop();
         }
 
-        if(grid.WorldToCell(gameObject.transform.position) == grid.WorldToCell(spawn))
+        if(hasReturnedHome)
         {
             state = GhostStates.Normal;
         }
-
-        
     }
+
+    
 
     void GhostDead()
     {
@@ -152,12 +153,10 @@ public class GhostController : MonoBehaviour
     {
         moveSpeed = 2.5f;
 
-        // When close enough to target, choose a new direction
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
         {
             Vector3Int currentCell = grid.WorldToCell(transform.position);
 
-            // Check all four directions
             Vector3Int[] dirs = {
                 Vector3Int.up,
                 Vector3Int.down,
@@ -173,13 +172,11 @@ public class GhostController : MonoBehaviour
                 Vector3Int next = currentCell + dir;
                 if (IsWalkable(next))
                 {
-                    // Compute distance to Pac-Man
                     float distToPacman = Vector3.Distance(
                         grid.CellToWorld(next),
                         pacman.position
                     );
 
-                    // Pick the tile that is farthest away
                     if (distToPacman > bestDistance)
                     {
                         bestDistance = distToPacman;
@@ -187,12 +184,9 @@ public class GhostController : MonoBehaviour
                     }
                 }
             }
-
-            // Move toward that "farthest" tile
             targetWorldPos = grid.CellToWorld(bestCell) + (Vector3)grid.cellSize / 2f;
     }
 
-    // Continue movement
     transform.position = Vector3.MoveTowards(
         transform.position,
         targetWorldPos,
@@ -204,10 +198,8 @@ public class GhostController : MonoBehaviour
     {
         moveSpeed = 4.5f;
 
-        // Move ghost toward current target position
         transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
 
-        // When close enough to target, choose a new direction
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
         {
             Vector3Int currentCell = grid.WorldToCell(transform.position);
@@ -221,7 +213,6 @@ public class GhostController : MonoBehaviour
 
             float currentDist = Vector3.Distance(transform.position, pacman.position);
 
-            // Collect all directions where distance to Pac-Man increases or stays equal
             List<Vector3Int> validDirs = new List<Vector3Int>();
 
             foreach (var dir in dirs)
@@ -325,28 +316,26 @@ public class GhostController : MonoBehaviour
     {
         moveSpeed = 4.5f;
 
-        // Move toward current target
+
         transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
 
-        // When close enough to target, decide next step
+
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
         {
-            // If no corners defined, do nothing
+
             if (cornerCells.Count == 0)
                 return;
 
-            // If we finished the current path, go to the next corner
+
             if (pathQueue.Count == 0)
             {
-                // Move to next corner in list (looping)
+
                 currentCornerIndex = (currentCornerIndex + 1) % cornerCells.Count;
                 Vector3Int nextCorner = cornerCells[currentCornerIndex];
 
-                // Generate a path to that corner
                 FindPathTox(nextCorner);
             }
 
-            // If a path exists, keep walking along it
             if (pathQueue.Count > 0)
             {
                 Vector3Int nextCell = pathQueue.Dequeue();
@@ -354,8 +343,7 @@ public class GhostController : MonoBehaviour
             }
             else
             {
-                // If pathQueue still empty (no path found or already there), 
-                // force move to next corner to keep cycling
+
                 currentCornerIndex = (currentCornerIndex + 1) % cornerCells.Count;
                 Vector3Int nextCorner = cornerCells[currentCornerIndex];
                 FindPathTox(nextCorner);

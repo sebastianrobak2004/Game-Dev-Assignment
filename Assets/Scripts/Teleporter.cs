@@ -19,7 +19,6 @@ public class Teleporter : MonoBehaviour
             
             if (pacman != null)
             {
-                // Reset Pac-Man completely at the new position
                 pacman.ResetAtPosition(linkedLocation);
                 
             }

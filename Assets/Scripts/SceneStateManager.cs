@@ -27,7 +27,6 @@ public class SceneStateManager : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton pattern
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);

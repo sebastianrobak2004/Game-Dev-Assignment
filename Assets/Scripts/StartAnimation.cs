@@ -21,7 +21,6 @@ public class StartAnimation : MonoBehaviour
     void Start()
     {
         corners = new List<Transform> { c1, c2, c3, c4 };
-        // Don’t teleport; just let them start moving from where they are
     }
 
     void Update()
@@ -37,7 +36,6 @@ public class StartAnimation : MonoBehaviour
 
         if (Vector3.Distance(obj.position, target.position) < 0.01f)
         {
-            // Go to next corner in order
             cornerIndex = (cornerIndex + 1) % corners.Count;
             obj.Rotate(0f, 0f, 90f);
 

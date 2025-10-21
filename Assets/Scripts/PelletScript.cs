@@ -8,7 +8,6 @@ public class PelletScript : MonoBehaviour
     private PelletTilemapSpawner pelletManager;
     [SerializeField]private int ScoreIncreaseFromNormalPellet;
     
-    // Start is called before the first frame update
     void Start()
     {
         pelletManager = FindFirstObjectByType<PelletTilemapSpawner>();
@@ -17,7 +16,6 @@ public class PelletScript : MonoBehaviour
     }
 
 
-    // Update is called once per frame
     void Update()
     {
         

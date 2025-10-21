@@ -46,7 +46,6 @@ public class PelletTilemapSpawner : MonoBehaviour
                 Vector3 worldPos = pelletTilemap.GetCellCenterWorld(pos) + offset;
                 GameObject pellet = Instantiate(prefabToSpawn, worldPos, Quaternion.identity, transform);
 
-                // Force Z to 0 to stay in 2D plane
                 Vector3 p = pellet.transform.position;
                 p.z = 0;
                 pellet.transform.position = p;
