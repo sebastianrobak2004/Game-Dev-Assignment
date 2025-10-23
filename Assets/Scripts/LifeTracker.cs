@@ -21,7 +21,7 @@ public class LifeTracker : MonoBehaviour
 
     void Update()
     {
-        if(needUpdate)
+        if(needUpdate & lives > 0)
         {
             spriteRenderer.sprite = HeartSprites[lives-1];
         }
