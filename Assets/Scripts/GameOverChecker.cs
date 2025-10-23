@@ -9,7 +9,7 @@ public class GameOverChecker : MonoBehaviour
     [SerializeField]private TextMeshProUGUI tb;
     [SerializeField] public int score;
 
-    public bool gameHasEnded => pacman.dead & score == 2300;
+    public bool gameHasEnded => pacman.dead || score > 2300;
     public bool newHighScore => score > PlayerPrefs.GetInt("HighScore", 0);
 
     void Update()

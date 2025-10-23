@@ -5,7 +5,6 @@ using TMPro;
 
 public class HighScoreKeeper : MonoBehaviour
 {
-    // Start is called before the first frame update
 
     [SerializeField]private TextMeshProUGUI tb;
 
@@ -14,7 +13,6 @@ public class HighScoreKeeper : MonoBehaviour
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         tb.text = "HighScore: " + PlayerPrefs.GetInt("HighScore", 0);

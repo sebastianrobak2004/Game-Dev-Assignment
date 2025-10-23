@@ -7,18 +7,18 @@ public class LifeTracker : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private List<Sprite> HeartSprites;
+    [SerializeField] private AudioSource bonkSound;
 
     private int lives = 3;
     private bool needUpdate = false;
-    // Start is called before the first frame update
     public void TookDamage()
     {
         lives -= 1;
         needUpdate = true;
+        bonkSound.Play();
     }
 
 
-    // Update is called once per frame
     void Update()
     {
         if(needUpdate)
@@ -26,7 +26,6 @@ public class LifeTracker : MonoBehaviour
             spriteRenderer.sprite = HeartSprites[lives-1];
         }
 
-        //test
         if(Input.GetKeyDown(KeyCode.Space)){
             TookDamage();
         }

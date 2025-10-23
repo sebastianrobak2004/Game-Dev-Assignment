@@ -20,10 +20,12 @@ public class PacmanMovement : MonoBehaviour
     [SerializeField] private List<Tilemap> tilemaps;
     [SerializeField] private List<TileBase> walkableTiles;
 
-
+    [SerializeField] private LifeTracker lt;
     [SerializeField] private ParticleSystem dirt;
-    [SerializeField] public bool dead;
+    [SerializeField] public bool dead => lives < 1;
     private bool playOnce = true;
+    private int lives = 3;
+    
 
     
 
@@ -154,7 +156,8 @@ public class PacmanMovement : MonoBehaviour
         GhostController ghost = other.GetComponent<GhostController>();
         if(ghost.state == GhostController.GhostStates.Normal)
         {
-            dead = true;
+            lt.TookDamage();
+            lives -= 1;
         }
         
         

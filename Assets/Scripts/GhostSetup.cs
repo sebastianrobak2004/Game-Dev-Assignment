@@ -40,7 +40,6 @@ public class GhostSetup : MonoBehaviour
     {
         if (grid == null)
         {
-            Debug.LogWarning("Grid reference missing on GhostSpawn!");
             return;
         }
 
@@ -49,7 +48,6 @@ public class GhostSetup : MonoBehaviour
         transform.position = targetWorldPos;
     }
 
-    // Optional: set the spawn position from another script
     public void SetSpawn(Vector2Int newGridPos)
     {
         gridSpawnPos = newGridPos;
