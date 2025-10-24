@@ -14,7 +14,7 @@ public class GhostController : MonoBehaviour
 
     private float timer;
 
-    private enum BehaviourStates{one, two, three, four};
+    private enum BehaviourStates{one, two, three, four, twoOne, twoTwo, twoThree, twoFour};
     [SerializeField] private BehaviourStates behaviour;
     public enum GhostStates{Normal, Dead, Scared, Recovering};
     [SerializeField] public GhostStates state = GhostStates.Normal;
@@ -29,6 +29,8 @@ public class GhostController : MonoBehaviour
 
     [SerializeField] private AudioSource scaredSound;
     [SerializeField] private AudioSource deadSound;
+    
+    
 
 
     private Queue<Vector3Int> pathQueue = new Queue<Vector3Int>();
@@ -88,6 +90,24 @@ public class GhostController : MonoBehaviour
             Ghost3Behaviour();
         }
         if(state == GhostStates.Normal & behaviour == BehaviourStates.four)
+        {
+            Ghost4Behaviour();
+        }
+
+
+        if(state == GhostStates.Normal & behaviour == BehaviourStates.twoOne)
+        {
+            Pathfindtopacman();
+        }
+        if(state == GhostStates.Normal & behaviour == BehaviourStates.twoTwo)
+        {
+            PathfindToPacmanAhead();
+        }
+        if(state == GhostStates.Normal & behaviour == BehaviourStates.twoThree)
+        {
+            TargetBetweenSpawnAndPacman();
+        }
+        if(state == GhostStates.Normal & behaviour == BehaviourStates.twoFour)
         {
             Ghost4Behaviour();
         }
@@ -227,14 +247,12 @@ public class GhostController : MonoBehaviour
                 }
             }
 
-            // Choose random from valid or fallback to any walkable
             Vector3Int chosenCell;
 
             if (validDirs.Count > 0)
                 chosenCell = validDirs[Random.Range(0, validDirs.Count)];
             else
             {
-                // fallback to any random walkable
                 List<Vector3Int> fallback = new List<Vector3Int>();
                 foreach (var dir in dirs)
                 {
@@ -244,14 +262,59 @@ public class GhostController : MonoBehaviour
                 chosenCell = fallback.Count > 0 ? fallback[Random.Range(0, fallback.Count)] : currentCell;
             }
 
-            // Update target position
             targetWorldPos = grid.CellToWorld(chosenCell) + (Vector3)grid.cellSize / 2f;
         }
 
 
     }
+
+    void Ghost2Behaviour()
+    {
+        moveSpeed = 4.5f;
+
+        transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
+        {
+            Vector3Int currentCell = grid.WorldToCell(transform.position);
+
+            Vector3Int[] dirs = {
+                Vector3Int.up,
+                Vector3Int.down,
+                Vector3Int.left,
+                Vector3Int.right
+            };
+
+            List<Vector3Int> validDirs = new List<Vector3Int>();
+
+            foreach (var dir in dirs)
+            {
+                Vector3Int next = currentCell + dir;
+                if (IsWalkable(next))
+                    validDirs.Add(next);
+            }
+
+            if (validDirs.Count > 0)
+            {
+                Vector3Int bestCell = validDirs[0];
+                float minDist = Vector3.Distance(grid.CellToWorld(bestCell), pacman.position);
+
+                foreach (var cell in validDirs)
+                {
+                    float dist = Vector3.Distance(grid.CellToWorld(cell), pacman.position);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        bestCell = cell;
+                    }
+                }
+
+                targetWorldPos = grid.CellToWorld(bestCell) + (Vector3)grid.cellSize / 2f;
+            }
+        }
+    }
     
-    void Ghost2Behaviour(){
+    void Pathfindtopacman(){
         moveSpeed = 4.5f;
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
             {
@@ -273,19 +336,97 @@ public class GhostController : MonoBehaviour
             );
     }
 
+    Vector3Int GetPacmanDirection()
+    {
+        
+        Vector3Int dir = Vector3Int.zero;
+
+        if (Input.GetKey(KeyCode.UpArrow))
+            dir = Vector3Int.up;
+        else if (Input.GetKey(KeyCode.DownArrow))
+            dir = Vector3Int.down;
+        else if (Input.GetKey(KeyCode.LeftArrow))
+            dir = Vector3Int.left;
+        else if (Input.GetKey(KeyCode.RightArrow))
+            dir = Vector3Int.right;
+
+        return dir;
+    }
+
+    void TargetBetweenSpawnAndPacman()
+    {
+        moveSpeed = 4.5f;
+
+        transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
+        {
+            Vector3 midpoint = (pacman.position + spawn) / 2f;
+            Vector3Int midpointCell = grid.WorldToCell(midpoint);
+
+            FindPathTox(midpointCell);
+
+            if (pathQueue.Count > 0)
+            {
+                Vector3Int nextCell = pathQueue.Dequeue();
+                targetWorldPos = grid.CellToWorld(nextCell) + (Vector3)grid.cellSize / 2f;
+            }
+            else
+            {
+                Vector3Int currentCell = grid.WorldToCell(transform.position);
+                Vector3Int[] dirs = { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+                List<Vector3Int> walkable = new List<Vector3Int>();
+                foreach (var dir in dirs)
+                {
+                    Vector3Int next = currentCell + dir;
+                    if (IsWalkable(next))
+                        walkable.Add(next);
+                }
+                if (walkable.Count > 0)
+                    targetWorldPos = grid.CellToWorld(walkable[Random.Range(0, walkable.Count)]) + (Vector3)grid.cellSize / 2f;
+            }
+        }
+    }
+
+    void PathfindToPacmanAhead()
+    {
+        moveSpeed = 4.5f;
+
+        if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
+        {
+            Vector3Int pacmanCell = grid.WorldToCell(pacman.position);
+            Vector3Int pacmanDir = GetPacmanDirection();
+
+            
+            Vector3Int targetCell = pacmanCell + pacmanDir * 4;
+
+            FindPathTox(targetCell);
+
+            if (pathQueue.Count > 0)
+            {
+                Vector3Int nextCell = pathQueue.Dequeue();
+                targetWorldPos = grid.CellToWorld(nextCell) + (Vector3)grid.cellSize / 2f;
+            }
+        }
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetWorldPos,
+            moveSpeed * Time.deltaTime
+        );
+    }
+
+
     void Ghost3Behaviour()
     {
         moveSpeed = 2.5f;
 
-        // Move ghost toward the current target
         transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
 
-        // When close enough to the target tile, pick a new random direction
         if (Vector3.Distance(transform.position, targetWorldPos) < 0.01f)
         {
             Vector3Int currentCell = grid.WorldToCell(transform.position);
 
-            // Possible directions
             Vector3Int[] dirs = {
                 Vector3Int.up,
                 Vector3Int.down,
@@ -293,7 +434,6 @@ public class GhostController : MonoBehaviour
                 Vector3Int.right
             };
 
-            // Collect all walkable directions
             List<Vector3Int> walkableDirs = new List<Vector3Int>();
             foreach (var dir in dirs)
             {
@@ -302,7 +442,6 @@ public class GhostController : MonoBehaviour
                     walkableDirs.Add(next);
             }
 
-            // Pick a random valid direction (if any)
             if (walkableDirs.Count > 0)
             {
                 Vector3Int chosenCell = walkableDirs[Random.Range(0, walkableDirs.Count)];
